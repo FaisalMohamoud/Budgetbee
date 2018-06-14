@@ -1,59 +1,71 @@
-"user-strict";
+'user-strict';
 
 //DATA CONTROLLER
-let dataController = (function () { })();
+let dataController = (function() {
+    //Function Constructors 
+    let Income = function(id, desc, value) {
+        this.id = id;
+		this.description = desc;
+		this.value = value;
+	};
+	let Expenses = function(id, desc, value) {
+        this.id = id;
+		this.description = desc;
+		this.value = value;
+    };
+   
+
+})();
 
 // UI CONTROLLER
-let UIController = (function () {
+let UIController = (function() {
     let DOMStrings = {
-        inputType: ".add__type",
-        inputDescription: ".add__description",
-        inputValue: ".add__value",
-        addbtn: ".add__btn"
+        inputType: '.add__type',
+        inputDescription: '.add__description',
+        inputValue: '.add__value',
+        addbtn: '.add__btn'
     };
     return {
-        getInput: function () {
+        getInput: function() {
             return {
                 type: document.querySelector(DOMStrings.inputType).value,
-                description: document.querySelector(DOMStrings.inputDescription).value,
+                description: document.querySelector(DOMStrings.inputDescription)
+                    .value,
                 value: document.querySelector(DOMStrings.inputValue).value
             };
         },
-        getDOMStrings: function () {
+        getDOMStrings: function() {
             return DOMStrings;
         }
     };
 })();
 
 // APP CONTROLLER
-let AppController = (function (dataCtrl, UICtrl) {
-     
+let AppController = (function(dataCtrl, UICtrl) {
     //Event handler
-    let setupEventListeners = function () {
+    let setupEventListeners = function() {
         let DOMElements = UICtrl.getDOMStrings();
         //Mouse Event
-        document.querySelector(DOMElements.addbtn).addEventListener("click", ctrlAddItem);
+        document
+            .querySelector(DOMElements.addbtn)
+            .addEventListener('click', ctrlAddItem);
         //Keyboard Event
-        document.addEventListener("keypress", function (e) {
+        document.addEventListener('keypress', function(e) {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
             }
         });
     };
-
-   //Controll the added Items.
-    let ctrlAddItem = function () { 
-       
+    //Controll the added Items.
+    let ctrlAddItem = function() {
         // 1. Get user input.
         let input = UICtrl.getInput();
-
-      
-
+        
     };
 
     return {
-        init: function () {
-            console.log("Application has started.");
+        init: function() {
+            console.log('Application has started.');
             setupEventListeners();
         }
     };

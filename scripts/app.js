@@ -12,6 +12,13 @@ let UIController = (function () {
         addbtn: ".add__btn"
     };
     return {
+        getInput: function () {
+            return {
+                type: document.querySelector(DOMStrings.inputType).value,
+                description: document.querySelector(DOMStrings.inputDescription).value,
+                value: document.querySelector(DOMStrings.inputValue).value
+            };
+        },
         getDOMStrings: function () {
             return DOMStrings;
         }
@@ -20,14 +27,12 @@ let UIController = (function () {
 
 // APP CONTROLLER
 let AppController = (function (dataCtrl, UICtrl) {
-    
+     
     //Event handler
     let setupEventListeners = function () {
         let DOMElements = UICtrl.getDOMStrings();
         //Mouse Event
-        document
-            .querySelector(DOMElements.addbtn)
-            .addEventListener("click", ctrlAddItem);
+        document.querySelector(DOMElements.addbtn).addEventListener("click", ctrlAddItem);
         //Keyboard Event
         document.addEventListener("keypress", function (e) {
             if (e.keyCode === 13 || e.which === 13) {
@@ -36,8 +41,22 @@ let AppController = (function (dataCtrl, UICtrl) {
         });
     };
 
-    return {
+   //Controll the added Items.
+    let ctrlAddItem = function () { 
+       
+        // 1. Get user input.
+        let input = UICtrl.getInput();
+
       
-    }
+
+    };
+
+    return {
+        init: function () {
+            console.log("Application has started.");
+            setupEventListeners();
+        }
+    };
 })(dataController, UIController);
 
+AppController.init();

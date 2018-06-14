@@ -2,19 +2,54 @@
 
 //DATA CONTROLLER
 let dataController = (function() {
-    //Function Constructors 
+    //Constructors
     let Income = function(id, desc, value) {
         this.id = id;
-		this.description = desc;
-		this.value = value;
-	};
-	let Expenses = function(id, desc, value) {
-        this.id = id;
-		this.description = desc;
-		this.value = value;
+        this.description = desc;
+        this.value = value;
     };
-   
+    let Expenses = function(id, desc, value) {
+        this.id = id;
+        this.description = desc;
+        this.value = value;
+    };
 
+    //Data Structure
+    let data = {
+        records: {
+            inc: [],
+            exp: []
+        }
+    };
+
+    return {
+        //Add Items to the Ds.
+        addItem: function(type, desc, val) {
+            let record, ID, item;
+
+            // 1. Create an ID for the item
+            if (data.records[type].length === 0) {
+                ID = 1;
+            } else {
+                // Get the previous Id and add 1 to create new id.
+                ID = data.records[type][data.records[type].length - 1].id + 1;
+            }
+
+            // 2. Create new Item from the Constructors..
+            if (type === 'inc') {
+                item = new Income(type, desc, val);
+            } else if (type === 'exp') {
+                item = new Expenses(type, desc, val);
+            }
+
+            // 3. Add the newly created Item to the Ds.
+            data.records[type].push(item);
+        },
+
+        test: {
+            data: data
+        }
+    };
 })();
 
 // UI CONTROLLER
@@ -31,7 +66,9 @@ let UIController = (function() {
                 type: document.querySelector(DOMStrings.inputType).value,
                 description: document.querySelector(DOMStrings.inputDescription)
                     .value,
-                value: document.querySelector(DOMStrings.inputValue).value
+                value: parseFloat(
+                    document.querySelector(DOMStrings.inputValue).value
+                )
             };
         },
         getDOMStrings: function() {
@@ -58,15 +95,31 @@ let AppController = (function(dataCtrl, UICtrl) {
     };
     //Controll the added Items.
     let ctrlAddItem = function() {
+        let input, newItem;
+
         // 1. Get user input.
-        let input = UICtrl.getInput();
-        
+        input = UICtrl.getInput();
+
+        if (
+            !isNaN(input.value) &&
+            input.value !== '' &&
+            input.description !== ''
+        ) {
+            // 2. Add new item to the data structure.
+            newItem = dataCtrl.addItem(
+                input.type,
+                input.description,
+                input.value
+            );
+        }
     };
+
 
     return {
         init: function() {
             console.log('Application has started.');
             setupEventListeners();
+           
         }
     };
 })(dataController, UIController);

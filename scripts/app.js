@@ -24,8 +24,8 @@ let dataController = (function () {
 			inc: 0,
 			exp: 0
 		},
-		budget: 0,
-		percentage: -1,
+		availableBudget: 0,
+		expPercentage: -1,
 
 	};
 
@@ -39,19 +39,18 @@ let dataController = (function () {
 		data.total[type] = sum;
 
 		// 2. Calculate budget.
-		data.budget = data.total.inc - data.total.exp;
+		data.availableBudget = data.total.inc - data.total.exp;
 
 		//3. Calculate Percentage of Income that is spent.
 		if (data.total.inc > 0) {
-			data.percentage = Math.round((data.total.exp / data.total.inc) * 100);
+			data.expPercentage = Math.round((data.total.exp / data.total.inc) * 100);
 		} else {
-			data.percentage = -1;
+			data.expPercentage = -1;
 		}
 
 	};
 
 	return {
-		//Add Items to the Ds.
 		addItem: function (type, desc, val) {
 			let record, ID, item;
 
@@ -82,8 +81,8 @@ let dataController = (function () {
 			return {
 				totalIncome: data.total.inc,
 				totalExpenses: data.total.exp,
-				budget: data.budget,
-				percentage: data.percentage
+				budget: data.availableBudget,
+				percentage: data.expPercentage
 			}
 		},
 
@@ -176,7 +175,7 @@ let UIController = (function () {
 			document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
 			document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalIncome;
 			document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExpenses;
-		
+
 			if (obj.percentage > 0) {
 				document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
 			} else {
@@ -253,6 +252,12 @@ let AppController = (function (dataCtrl, UICtrl) {
 		init: function () {
 			console.log('Application has started.');
 			setupEventListeners();
+			UICtrl.displayBudget({
+				totalIncome: 0,
+				totalExpenses: 0,
+				budget: 0,
+				percentage: -1
+			})
 		}
 	};
 })(dataController, UIController);

@@ -19,7 +19,28 @@ let dataController = (function () {
 		records: {
 			inc: [],
 			exp: []
-		}
+		},
+		total: {
+			inc: 0,
+			exp: 0
+		},
+		budget: 0,
+	};
+
+	let calculateBudget = function (type) {
+
+		// 1. Calculate Totals.
+		let sum = 0;
+		data.records[type].forEach(function (current) {
+			sum += current.value;
+		});
+		data.total[type] = sum;
+
+		// 2. Calculate budget.
+		data.budget = data.total.exp - data.total.inc;
+
+		//3. Calculate Percentage of Income that is spent.
+
 	};
 
 	return {
@@ -45,6 +66,8 @@ let dataController = (function () {
 			// 3. Add the newly created Item to the Ds.
 			data.records[type].push(item);
 
+			// Calculate Total
+			calculateBudget(type);
 			return item;
 		},
 
@@ -116,10 +139,6 @@ let UIController = (function () {
 			// Insert the HTML into the DOM.
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 
-
-
-
-
 		},
 		clearFields: () => {
 			// Clear Fields.
@@ -175,8 +194,6 @@ let AppController = (function (dataCtrl, UICtrl) {
 			UICtrl.addItemList(newItem, input.type);
 			// 3. Clear Input Fields.
 			UICtrl.clearFields();
-
-			//4.UPDATE UI.
 		}
 	};
 

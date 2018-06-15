@@ -25,6 +25,8 @@ let dataController = (function () {
 			exp: 0
 		},
 		budget: 0,
+		percentage: -1,
+
 	};
 
 	let calculateBudget = function (type) {
@@ -37,7 +39,7 @@ let dataController = (function () {
 		data.total[type] = sum;
 
 		// 2. Calculate budget.
-		data.budget = data.total.exp - data.total.inc;
+		data.budget = data.total.inc - data.total.exp;
 
 		//3. Calculate Percentage of Income that is spent.
 
@@ -71,6 +73,16 @@ let dataController = (function () {
 			return item;
 		},
 
+		getBudget: function () {
+			return{
+				totalIncome: data.total.inc,
+				totalExpenses: data.total.exp,
+				budget: data.budget,
+				percentage: data.percentage
+			}
+		},
+
+
 		//TODO: Remove this after development.
 		test: {
 			data: data
@@ -87,7 +99,10 @@ let UIController = (function () {
 		addbtn: '.add__btn',
 		incomeList: '.income__list',
 		expensesList: '.expenses__list',
-
+		budgetLabel: '.budget__value',
+		incomeLabel: '.budget__income--value',
+		expensesLabel: '.budget__expenses--value',
+		expensesLabel: '.budget__expenses--value',
 	};
 	return {
 		getInput: function () {
@@ -140,6 +155,7 @@ let UIController = (function () {
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 
 		},
+		
 		clearFields: () => {
 			// Clear Fields.
 			document.querySelector(DOMStrings.inputDescription).value = '';
@@ -147,6 +163,13 @@ let UIController = (function () {
 
 			// Set focus back to the description field.
 			document.querySelector(DOMStrings.inputDescription).focus();
+		},
+
+		displayBudget: function(obj){
+
+			document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+			document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalIncome;
+			document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExpenses;
 		},
 
 		getDOMStrings: function () {
@@ -194,7 +217,24 @@ let AppController = (function (dataCtrl, UICtrl) {
 			UICtrl.addItemList(newItem, input.type);
 			// 3. Clear Input Fields.
 			UICtrl.clearFields();
+
+			//4.UPDATE UI.
+			updateUI();
+
+
 		}
+	};
+
+	let updateUI = function () {
+		let budget;
+
+		// 1. Get Budget
+		budget = dataCtrl.getBudget();
+
+		//2. Update UI.
+		UICtrl.displayBudget(budget);
+
+
 	};
 
 	return {

@@ -30,9 +30,9 @@ let dataController = (function () {
 	};
 
 	let calculateBudget = function (type) {
-
+		let sum;
 		// 1. Calculate Totals.
-		let sum = 0;
+		sum = 0;
 		data.records[type].forEach(function (current) {
 			sum += current.value;
 		});
@@ -42,6 +42,11 @@ let dataController = (function () {
 		data.budget = data.total.inc - data.total.exp;
 
 		//3. Calculate Percentage of Income that is spent.
+		if (data.total.inc > 0) {
+			data.percentage = Math.round((data.total.exp / data.total.inc) * 100);
+		} else {
+			data.percentage = -1;
+		}
 
 	};
 
@@ -74,7 +79,7 @@ let dataController = (function () {
 		},
 
 		getBudget: function () {
-			return{
+			return {
 				totalIncome: data.total.inc,
 				totalExpenses: data.total.exp,
 				budget: data.budget,
@@ -103,6 +108,7 @@ let UIController = (function () {
 		incomeLabel: '.budget__income--value',
 		expensesLabel: '.budget__expenses--value',
 		expensesLabel: '.budget__expenses--value',
+		percentageLabel: '.budget__expenses--percentage'
 	};
 	return {
 		getInput: function () {
@@ -155,7 +161,7 @@ let UIController = (function () {
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 
 		},
-		
+
 		clearFields: () => {
 			// Clear Fields.
 			document.querySelector(DOMStrings.inputDescription).value = '';
@@ -165,11 +171,17 @@ let UIController = (function () {
 			document.querySelector(DOMStrings.inputDescription).focus();
 		},
 
-		displayBudget: function(obj){
+		displayBudget: function (obj) {
 
 			document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
 			document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalIncome;
 			document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExpenses;
+		
+			if (obj.percentage > 0) {
+				document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
+			} else {
+				document.querySelector(DOMStrings.percentageLabel).textContent = '---';
+			}
 		},
 
 		getDOMStrings: function () {

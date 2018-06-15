@@ -37,15 +37,18 @@ let dataController = (function () {
 
 			// 2. Create new Item from the Constructors..
 			if (type === 'inc') {
-				item = new Income(type, desc, val);
+				item = new Income(ID, desc, val);
 			} else if (type === 'exp') {
-				item = new Expenses(type, desc, val);
+				item = new Expenses(ID, desc, val);
 			}
 
 			// 3. Add the newly created Item to the Ds.
 			data.records[type].push(item);
+
+			return item;
 		},
 
+		//TODO: Remove this after development.
 		test: {
 			data: data
 		}
@@ -58,20 +61,66 @@ let UIController = (function () {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
-		addbtn: '.add__btn'
+		addbtn: '.add__btn',
+		incomeList: '.income__list',
+		expensesList: '.expenses__list',
+
 	};
 	return {
 		getInput: function () {
 			return {
 				type: document.querySelector(DOMStrings.inputType).value,
-				description: document.querySelector(DOMStrings.inputDescription)
-					.value,
+				description: document.querySelector(DOMStrings.inputDescription).value,
 				value: parseFloat(
 					document.querySelector(DOMStrings.inputValue).value
 				)
 			};
 		},
 
+		addItemList: function (obj, type) {
+			let HTML, newHTML, element;
+
+			// Create HTML string with some placeholders..
+			if (type === 'inc') {
+				element = DOMStrings.incomeList;
+				HTML = `<div class="item clearfix" id="%id%">
+			 <div class="item__description">%description%</div>
+			 <div class="right clearfix">
+			  <div class="item__value">%value%</div>
+			  <div class="item__delete">
+					<button class="item__delete--btn">
+						<i class="ion-ios-close-outline"></i>
+					</button>
+			  </div>
+			 </div>
+			</div>`;
+			} else if (type === 'exp') {
+				element = DOMStrings.expensesList;
+				HTML = `<div class="item clearfix" id="%id%">
+				<div class="item__description">%description%</div>
+				<div class="right clearfix">
+					<div class="item__value">%value%</div>
+					<div class="item__percentage">21%</div>
+					<div class="item__delete">
+						<button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+					</div>
+				</div>
+			</div>`;
+			}
+
+			// Replace the placeholder text with some actual data text.
+			newHTML = HTML.replace('%id%', obj.id);
+			newHTML = newHTML.replace('%description%', obj.description);
+			newHTML = newHTML.replace('%value%', obj.value);
+
+			// Insert the HTML into the DOM.
+			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
+
+
+
+
+
+		},
 		clearFields: () => {
 			// Clear Fields.
 			document.querySelector(DOMStrings.inputDescription).value = '';
@@ -79,7 +128,6 @@ let UIController = (function () {
 
 			// Set focus back to the description field.
 			document.querySelector(DOMStrings.inputDescription).focus();
-
 		},
 
 		getDOMStrings: function () {
@@ -90,7 +138,6 @@ let UIController = (function () {
 
 // APP CONTROLLER
 let AppController = (function (dataCtrl, UICtrl) {
-
 	//Event handler
 	let setupEventListeners = function () {
 		let DOMElements = UICtrl.getDOMStrings();
@@ -114,7 +161,7 @@ let AppController = (function (dataCtrl, UICtrl) {
 
 		if (
 			!isNaN(input.value) &&
-			input.value !== '' &&
+			input.value > 0 &&
 			input.description !== ''
 		) {
 			// 2. Add new item to the data structure.
@@ -125,7 +172,7 @@ let AppController = (function (dataCtrl, UICtrl) {
 			);
 
 			// 2. Add new item to the UI.
-
+			UICtrl.addItemList(newItem, input.type);
 			// 3. Clear Input Fields.
 			UICtrl.clearFields();
 

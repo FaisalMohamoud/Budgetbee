@@ -138,6 +138,7 @@ body {
     font-weight: 300;
     transition: border 0.3s;
 }
+.add__type:focus{font-weight: bold}
 
 .add__description,
 .add__value {
@@ -263,7 +264,6 @@ h2 {
 
 .item__delete--btn:focus { outline: none; }
 .item__delete--btn:active { transform: translateY(2px); }
-
 .item:hover .item__delete--btn { display: block; }
 .item:hover .item__value { transform: translateX(-20px); }
 .item:hover .item__percentage { transform: translateX(-20px); }

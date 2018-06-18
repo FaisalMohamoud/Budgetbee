@@ -135,10 +135,9 @@ body {
     color: inherit;
     background-color: #fff;
     margin-right: 10px;
-    font-weight: 300;
+    font-weight: bold;
     transition: border 0.3s;
 }
-.add__type:focus{font-weight: bold}
 
 .add__description,
 .add__value {

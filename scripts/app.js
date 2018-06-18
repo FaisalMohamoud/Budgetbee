@@ -140,7 +140,8 @@ let UIController = (function () {
 		expensesLabel: '.budget__expenses--value',
 		expensesLabel: '.budget__expenses--value',
 		percentageLabel: '.budget__expenses--percentage',
-		ItemPercentageLabel: '.item__percentage'
+		itemPercentageLabel: '.item__percentage',
+		dateLabel: '.budget__title--month'
 	};
 
 	let formatNumber = function (num, type) {
@@ -170,6 +171,7 @@ let UIController = (function () {
 		return (type === 'exp' ? '-' : '+') + ' ' + amount + '.' + decimal;
 	};
 
+	// Custom forEach method for nodeLists.
 	let nodeListForeach = function(list, callback){
 		for (let i = 0; i < list.length; i++) {
 			callback(list[i], i);
@@ -254,7 +256,7 @@ let UIController = (function () {
 		displayPercentages: function(percentages){
 			let fields;
 			
-			fields = document.querySelectorAll(DOMStrings.ItemPercentageLabel);
+			fields = document.querySelectorAll(DOMStrings.itemPercentageLabel);
 			nodeListForeach(fields, function(current, index){
 				if (percentages[index] > 0) {
 					current.textContent = percentages[index] + '%'
@@ -263,6 +265,19 @@ let UIController = (function () {
 				}
 			});
 
+		},
+
+		displayDate: function(){
+			let now, month, year, allMonths;
+
+			now = new Date();
+			year = now.getFullYear();
+			month = now.getMonth();
+
+			allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'Decemeber'];
+
+			document.querySelector(DOMStrings.dateLabel).textContent = allMonths[month] + ' ' + year;
+			
 		},
 
 		getDOMStrings: function () {
@@ -332,19 +347,22 @@ let AppController = (function (dataCtrl, UICtrl) {
 
 		// 4. Update the UI with item percentage.
 		UICtrl.displayPercentages(percentage);
-
+		
 	};
 
 	return {
 		init: function () {
 			console.log('Application has started.');
 			setupEventListeners();
+			UICtrl.displayDate();
 			UICtrl.displayBudget({
 				totalIncome: 0,
 				totalExpenses: 0,
 				budget: 0,
 				percentage: -1
-			})
+			});
+		
+			
 		}
 	};
 })(dataController, UIController);

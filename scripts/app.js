@@ -91,7 +91,7 @@ let dataController = (function () {
 			// 3. Add the newly created Item to the Ds.
 			data.records[type].push(item);
 
-			// Calculate Total
+			// Calculate budget.
 			calculateBudget(type);
 			return item;
 		},
@@ -110,6 +110,9 @@ let dataController = (function () {
 			if (index !== -1) {
 				data.records[type].splice(index, 1);
 			}
+
+			// 4. Calculate budget.
+			calculateBudget(type);
 		},
 
 		getItemPercentage: function () {
@@ -260,6 +263,11 @@ let UIController = (function () {
 				.insertAdjacentHTML('beforeend', newHTML);
 		},
 
+		deleteItemList: function(selectorId){
+			let element = document.getElementById(selectorId);
+			element.parentNode.removeChild(element);
+		},
+
 		clearFields: () => {
 			// Clear Fields.
 			document.querySelector(DOMStrings.inputDescription).value = '';
@@ -401,6 +409,12 @@ let AppController = (function (dataCtrl, UICtrl) {
 
 			// 3. Delete from Ds.
 			dataCtrl.deleteItem(type, id);
+
+			// 4. delete from the UI.
+			UICtrl.deleteItemList(itemId);
+			
+			//5. Update the UI.
+			updateUI();
 		}
 	};
 

@@ -339,6 +339,15 @@ let UIController = (function () {
 				allMonths[month] + ' ' + year;
 		},
 
+		styleInputFields: function(){
+			let fields = document.querySelectorAll(DOMStrings.inputType + ',' + DOMStrings.inputDescription + ',' + DOMStrings.inputValue);
+
+			nodeListForeach(fields, function(c){
+				c.classList.toggle('red-focus');
+			});
+
+			document.querySelector(DOMStrings.addBtn).classList.toggle('red');
+		},
 		getDOMStrings: function () {
 			return DOMStrings;
 		}
@@ -364,6 +373,8 @@ let AppController = (function (dataCtrl, UICtrl) {
 		// 2. Delete Event.
 		document.querySelector(DOMElements.itemContainer).addEventListener('click', ctrlDeleteItem);
 
+	   // 3. Style Input Fields.
+	   document.querySelector(DOMElements.inputType).addEventListener('change', UICtrl.styleInputFields);	
 
 	};
 	//Controll the added Items.
@@ -434,6 +445,7 @@ let AppController = (function (dataCtrl, UICtrl) {
 		UICtrl.displayPercentages(percentage);
 	};
 
+	
 	return {
 		init: function () {
 			console.log('Application has started.');
